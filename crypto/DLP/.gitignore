@@ -1,0 +1,3 @@
+__pycache__
+*.sage.py
+.ipynb_checkpoints

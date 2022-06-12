@@ -1,0 +1,8 @@
+bin
+exe
+src/_pixel_gen.h
+src/_vertex_gen.h
+src/_fonttexture_gen.h
+*.vcxproj.user
+link.exe
+.vs

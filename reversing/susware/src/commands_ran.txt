@@ -1,0 +1,12 @@
+whoami
+systeminfo
+pwd
+cd C:\
+dir
+cd flag
+dir
+type flag.txt
+ipconfig /all
+net user
+net user Administrator
+exit

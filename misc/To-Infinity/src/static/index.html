@@ -1,0 +1,949 @@
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+        }
+    });
+    </script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+
+<div id="details-container">
+<div id="details">
+    <div id="header"><p>Goal: Reach Room <span style="font-size:1.2em">$\infty$</span></p></div>
+    <div class="content" id="content-1"></div>
+    <div class="content" id="content-2"></div>
+</div>
+</div>
+
+<input type="checkbox" id="leaderboard-button" name="leaderboard-button">
+<label id="leaderboard-button-label" for="leaderboard-button">Show Leaderboard</label><br>
+<div id="leaderboard"></div>
+
+<div id="submission-container">
+    <form id="submission-form" action="">
+        <label for="pname">Player name:</label><br>
+        <input type="text" id="submission-pname" name="pname"><br>
+    </form>
+</div>
+
+<div id="screen"></div>
+
+<style>
+
+@font-face {
+    font-family: victormono;
+    font-style: normal;
+    src: url(/assets/fonts/VictorMono-Regular.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: victormono;
+    font-style: normal;
+    font-weight: bold;
+    src: url(/assets/fonts/VictorMono-Bold.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: victormono;
+    font-style: italic;
+    src: url(/assets/fonts/VictorMono-Italic.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: victormono;
+    font-style: italic;
+    font-weight: bold;
+    src: url(/assets/fonts/VictorMono-BoldItalic.ttf) format("truetype");
+}
+
+
+html, body {
+    margin: 0; 
+    height: 100%; 
+    overflow: hidden;
+
+    font-family: victormono;
+}
+
+#screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+#details-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    height: 30vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#details {
+    color: white;
+    width: calc(min(100vw, 400px));
+    height: 100%;
+    padding-top: 40px;
+
+    text-align: center;
+    word-break: break-all;
+    font-family: victormono;
+
+    display: flex;
+    flex-direction: column;
+}
+
+#header {
+
+    display: inline-block;
+    vertical-align: top;
+    
+    font-size: 2em;
+    text-shadow: 
+        0 0 0.10em rgba(1, 253, 199, 1.0), 
+        0 0 0.08em rgba(1, 253, 199, 0.7), 
+        0 0 0.15em rgba(1, 253, 199, 0.5), 
+        0 0 0.20em rgba(1, 253, 199, 0.3), 
+        0 0 0.30em rgba(1, 253, 199, 0.2), 
+        0 0 0.50em rgba(1, 253, 199, 0.1); 
+}
+
+.content {
+
+    display: inline-block;
+    vertical-align: bottom;
+
+    font-size: 1.3em;
+    text-shadow: 
+        0 0 0.10em rgb(245, 147, 207), 
+        0 0 0.08em rgba(245, 147, 207, 0.7), 
+        0 0 0.15em rgba(245, 147, 207, 0.5), 
+        0 0 0.20em rgba(245, 147, 207, 0.3), 
+        0 0 0.30em rgba(245, 147, 207, 0.2), 
+        0 0 0.50em rgba(245, 147, 207, 0.1); 
+}
+
+#content-1 {
+    min-height: 90px;
+}
+
+#content-2 {
+    padding-top: 10px;
+    font-size: 1em;
+    word-break: normal;
+}
+
+input[type=checkbox] {
+   position: absolute;
+   top: -9999px;
+   left: -9999px;
+}
+
+input[type=checkbox]:checked ~ #leaderboard {
+    visibility: visible !important;
+}
+
+input[type=checkbox]:checked ~ #leaderboard-button-label {
+    background-color: white !important;
+    color: black !important;
+}
+
+#leaderboard-button-label:hover {
+    background-color: white !important;
+    color: black !important;
+}
+
+#leaderboard-button-label {
+
+    cursor: pointer;
+
+    position: fixed;
+    bottom:30px;
+    right:30px;
+
+    border-radius: 60px;
+    padding: 10px;
+    border: 2px solid white;
+
+    color: white;
+    font-weight: bold;
+    user-select: none;
+
+    z-index: 100;
+}
+
+#leaderboard {
+
+    visibility: hidden;
+
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+
+    max-height: calc(min(80vh, 900px));
+    background-color: rgba(25, 25, 26, 0.9);
+
+    border-radius: 10px;
+    padding: 30px;
+    overflow-y: auto;
+
+    z-index: 100;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid white;
+    outline: 2px solid aqua;
+
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+
+}
+
+#leaderboard::-webkit-scrollbar {
+    display: none;
+}
+
+#leaderboard table {
+    margin: auto;
+    color: white;
+    font-size: large;
+}
+
+#leaderboard table tr th {
+    width: 5em;
+    text-shadow: 
+        0 0 0.10em rgba(1, 253, 199, 1.0), 
+        0 0 0.08em rgba(1, 253, 199, 0.7), 
+        0 0 0.15em rgba(1, 253, 199, 0.5), 
+        0 0 0.20em rgba(1, 253, 199, 0.3), 
+        0 0 0.30em rgba(1, 253, 199, 0.2), 
+        0 0 0.50em rgba(1, 253, 199, 0.1);
+
+    padding-bottom: 10px;
+
+}
+
+#leaderboard table tr td {
+    max-width: 20em;
+    text-align: center;
+    overflow-x: auto;
+    white-space: nowrap;
+
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+#leaderboard table tr td::-webkit-scrollbar {
+    display: none;
+}
+
+#submission-container {
+
+    visibility: hidden;
+
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+
+    max-height: calc(min(80vh, 900px));
+    background-color: rgba(25, 25, 26, 0.9);
+
+    border-radius: 10px;
+    padding: 30px;
+    overflow-y: auto;
+
+    z-index: 100;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid white;
+    outline: 2px solid aqua;
+
+    color: white;
+}
+
+
+</style>
+
+<script type="module">
+
+import * as THREE from 'https://cdn.skypack.dev/three@0.135.0';
+import { OrbitControls } from 'https://cdn.skypack.dev/three@0.135.0/examples/jsm/controls/OrbitControls.js';
+import TWEEN from 'https://cdn.skypack.dev/@tweenjs/tween.js'
+
+const BG_COLOR = 0x332255;
+const FLOOR_COLOR = 0x44bb77;
+const PLAYER_COLOR = 0xffbbcc;
+const DOOR_COLOR = 0x00ff00;
+
+const ROOM_CHANGE_TIMING = 600 * .6;
+const PLAYER_MOVE_TIMING = 1000 * .6;
+
+const FLOOR_SIZE = 3;
+const FLOOR_DEPTH = .1;
+const PATH_WIDTH = .5;
+const PATH_DEPTH = .3;
+const PLAYER_SIZE = 1.;
+const DOOR_SIZE = .3;
+
+var camera, renderer, scene, controls;
+var raycaster, pointer;
+var directionalLight;
+var room, roommat, player, doorsclickable, infinity_room;
+var moves = "";
+
+var curr_room;
+
+const getCanvasSize = () => {
+    const W = document.getElementById("screen").clientWidth;
+    const H = document.getElementById("screen").clientHeight;
+    return [W,H];
+}
+
+function initStatic() {
+
+    // Camera init
+    camera = new THREE.PerspectiveCamera( 75, getCanvasSize()[0]/getCanvasSize()[1], 0.1, 1000 );
+    camera.position.set( 3, 3, 3 );
+
+    // Renderer init
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize( getCanvasSize()[0], getCanvasSize()[1] );
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
+    document.getElementById("screen").appendChild( renderer.domElement );
+
+    // Scene init
+    scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(BG_COLOR, 0, 10);
+    scene.background = new THREE.Color(BG_COLOR);
+
+    // Controls init
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableZoom = false;
+    controls.enablePan = false;
+    controls.enableDamping = true;
+    controls.minPolarAngle = Math.PI/2 - 1.;
+    controls.maxPolarAngle = Math.PI/2 - .2;
+    controls.target.set(0,1,0);
+
+    // Lights init
+    directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+    directionalLight.intensity = 1.;
+    directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 1024;
+    directionalLight.shadow.mapSize.height = 1024;
+    scene.add( directionalLight );
+    const ambientLight = new THREE.AmbientLight( 0xa0a0a0 );
+    scene.add( ambientLight );
+
+    // Geometry room init
+    room = new THREE.Group();
+
+    const fgeom = new THREE.BoxGeometry(FLOOR_SIZE,FLOOR_DEPTH,FLOOR_SIZE);
+    const fmat = new THREE.MeshPhysicalMaterial({
+        color: FLOOR_COLOR
+    });
+    roommat = fmat;
+    const floor = new THREE.Mesh( fgeom, fmat );
+    floor.receiveShadow = true; //default
+    room.add( floor );
+
+    for (let i = 0; i < 4; i++) {
+        let x = (FLOOR_SIZE-PATH_WIDTH) / 2;
+        const pgeom = new THREE.BoxGeometry(x,PATH_DEPTH,x);
+        const path = new THREE.Mesh( pgeom, fmat );
+        path.position.set(
+            (FLOOR_SIZE + PATH_WIDTH)/4 * ((i % 2)*2-1),
+            (FLOOR_DEPTH + PATH_DEPTH)/2,
+            (FLOOR_SIZE + PATH_WIDTH)/4 * ((Math.floor(i / 2))*2-1)
+        )
+        path.castShadow = true;
+        path.receiveShadow = true;
+        room.add( path );
+    }
+
+    doorsclickable = new THREE.Group();
+    const dmat = new THREE.MeshPhysicalMaterial({
+        color: DOOR_COLOR,
+        emissive: 0x444444,
+        side: THREE.DoubleSide
+    });
+    var ff = [[1,0],[-1,0],[0,1],[0,-1]];
+    var x = DOOR_SIZE + FLOOR_SIZE / 2 + .7;
+    for (let i = 0; i < 4; i++) {
+        const dgeom = new THREE.RingGeometry( DOOR_SIZE*0.8, DOOR_SIZE, 32 );
+        const dinvgeom = new THREE.RingGeometry(0, DOOR_SIZE*0.8, 32);
+        const door = new THREE.Mesh( dgeom, dmat );
+        const dmat2 = new THREE.MeshBasicMaterial({
+            opacity: 0,
+            color: 0xff0000,
+            transparent: true,
+            side: THREE.DoubleSide,
+        });
+        const doorinv = new THREE.Mesh(dinvgeom, dmat2);
+        doorinv.position.set(
+            ff[i][0]*x, .5, ff[i][1]*x
+        )
+        door.position.set(
+            ff[i][0]*x, .5, ff[i][1]*x
+        )
+        if (i < 2) {
+            doorinv.rotateY(Math.PI/2)
+            dgeom.rotateY(Math.PI/2);
+        }
+        door.castShadow = true;
+        door.receiveShadow = true;
+        room.add( door );
+        doorsclickable.add( doorinv );
+    }
+    room.add(doorsclickable)
+    scene.add(room);
+
+    // Geometry player init
+    var heartShape = new THREE.Shape();
+    heartShape.moveTo( 25, 25 );
+    heartShape.bezierCurveTo( 25, 25, 20, 0, 0, 0);
+    heartShape.bezierCurveTo( - 30, 0, - 30, 35, - 30, 35 );
+    heartShape.bezierCurveTo( - 30, 55, - 10, 77, 25, 95 );
+    heartShape.bezierCurveTo( 60, 77, 80, 55, 80, 35 );
+    heartShape.bezierCurveTo( 80, 35, 80, 0, 50, 0 );
+    heartShape.bezierCurveTo( 35, 0, 25, 25, 25, 25 );
+    const pgeom = new THREE.ExtrudeGeometry(heartShape, {   
+        depth: 0, 
+        bevelEnabled: true, 
+        bevelSegments: 3, 
+        bevelOffset: -5,
+        bevelSize: 20, 
+        bevelThickness: 20,
+        curveSegments: 20,
+    });
+    pgeom.center();
+    pgeom.rotateX(Math.PI);
+    pgeom.rotateY(Math.PI/2);
+    const pmat = new THREE.MeshPhysicalMaterial({
+        color: PLAYER_COLOR,
+        emissive: 0x444444,
+    });
+    player = new THREE.Mesh(pgeom, pmat);
+    player.scale.set(0.003*PLAYER_SIZE,0.003*PLAYER_SIZE,0.003*PLAYER_SIZE);
+    player.position.set(0,.4,0);
+    player.castShadow = true;
+    player.receiveShadow = true;
+    scene.add(player);
+
+    // Infinity room
+    const loader = new THREE.CubeTextureLoader();
+    const texture = loader.load([
+        '/assets/img/texture.jpg',
+        '/assets/img/texture.jpg',
+        '/assets/img/texture.jpg',
+        '/assets/img/texture.jpg',
+        '/assets/img/texture.jpg',
+        '/assets/img/texture.jpg',
+    ]);
+    texture.mapping = THREE.CubeRefractionMapping;
+    const materialr = new THREE.MeshBasicMaterial(
+        {
+            color: 0xbb0000,
+            envMap: texture,
+            opacity: 0.7,
+            transparent: true, 
+            refractionRatio: 0.9,
+            blending: THREE.AdditiveBlending,
+        });
+    const materialg = new THREE.MeshBasicMaterial(
+        {
+            color: 0x00ff00,
+            envMap: texture,
+            opacity: 0.7,
+            transparent: true, 
+            refractionRatio: 0.9-0.005,
+            blending: THREE.AdditiveBlending,
+        });
+    const materialb = new THREE.MeshBasicMaterial(
+        {
+            color: 0x0000ee,
+            envMap: texture,
+            opacity: 0.7,
+            transparent: true, 
+            refractionRatio: 0.9-0.01,
+            blending: THREE.AdditiveBlending,
+        });
+
+    const materialm = new THREE.MeshBasicMaterial(
+        {
+            color: 0xf70073,
+            opacity: 0.3,
+            transparent: true, 
+            blending: THREE.AdditiveBlending,
+        });
+
+    var heartShape = new THREE.Shape();
+    heartShape.moveTo( 25, 25 );
+    heartShape.bezierCurveTo( 25, 25, 20, 0, 0, 0);
+    heartShape.bezierCurveTo( - 30, 0, - 30, 35, - 30, 35 );
+    heartShape.bezierCurveTo( - 30, 55, - 10, 77, 25, 95 );
+    heartShape.bezierCurveTo( 60, 77, 80, 55, 80, 35 );
+    heartShape.bezierCurveTo( 80, 35, 80, 0, 50, 0 );
+    heartShape.bezierCurveTo( 35, 0, 25, 25, 25, 25 );
+
+    const geometry = new THREE.ExtrudeGeometry(heartShape, 
+        {   
+            depth: 0, 
+            bevelEnabled: true, 
+            bevelSegments: 3, 
+            bevelOffset: -5,
+            bevelSize: 20, 
+            bevelThickness: 20,
+            curveSegments: 3,
+        });
+
+    geometry.center();
+    geometry.position = new THREE.Vector3(0,0,0);
+    geometry.rotateX(Math.PI);
+    const heartr = new THREE.Mesh(geometry, materialr);
+    const heartb = new THREE.Mesh(heartr.geometry, materialg);
+    const heartg = new THREE.Mesh(heartr.geometry, materialb);
+    const heartm = new THREE.Mesh(heartr.geometry, materialm);
+    infinity_room = new THREE.Group();
+    infinity_room.add(heartr); infinity_room.add(heartg); 
+    infinity_room.add(heartb); infinity_room.add(heartm);
+    infinity_room.scale.set(0.02,0.02,0.02);
+    infinity_room.position.set(0, -5, 0);
+    infinity_room.visible = false;
+    scene.add(infinity_room);
+}
+
+var changeRoomCallbacks;
+var playerMoveCallbacks;
+var infinityRoomCallbacks;
+function initAnimations() {
+
+    // Room animations
+
+    var isChangeRoom = false;
+    var changeAnimation = new TWEEN.Tween(room.position)
+        .to({y:-10}, ROOM_CHANGE_TIMING, TWEEN.Easing.Quadratic.InOut)
+        .onComplete(() => {
+            //console.log("Complete1");
+            changeTheme(curr_room);
+            if (curr_room == "infinity") {
+                displayInfinityRoom();
+                return;
+            }
+            changeAnimation2.start();
+            
+    });
+    var changeAnimation2 = new TWEEN.Tween(room.position)
+        .to({y:0}, ROOM_CHANGE_TIMING, TWEEN.Easing.Quadratic.InOut)
+        .onComplete(() => {
+            //console.log("Complete2");
+            isChangeRoom = false;
+    });
+
+    changeRoomCallbacks = [
+        () => {
+            isChangeRoom = true;
+            changeAnimation.delay((PLAYER_MOVE_TIMING - ROOM_CHANGE_TIMING)).start();
+        },
+        () => {
+            if (isChangeRoom) {
+                changeAnimation.update();
+                changeAnimation2.update();
+            }
+        }
+    ];
+
+    // Player animations
+
+    var isPlayerMove = false;
+    var currPlayerMove = null;
+    var plookup = {
+        "/d": [{x:10}, {x:-10}],
+        "/u": [{x:-10}, {x:10}],
+        "-": [{z:10}, {z:-10}],
+        "+": [{z:-10}, {z:10}]
+    }
+    var getPlayerMove = (pos) => {
+        var _2 = new TWEEN.Tween(player.position)
+            .to({x:0, z:0}, PLAYER_MOVE_TIMING, TWEEN.Easing.Quadratic.InOut)
+            .onComplete(() => {
+                //console.log("Complete2");
+                isPlayerMove = false;
+                currPlayerMove = null;
+        });
+        var _1 = new TWEEN.Tween(player.position)
+            .to(plookup[pos][0], PLAYER_MOVE_TIMING, TWEEN.Easing.Quadratic.InOut)
+            .onComplete(() => {
+                if (pos == "/d" || pos == "/u")
+                    player.position.x = plookup[pos][1].x;
+                else
+                    player.position.z = plookup[pos][1].z;
+                if (curr_room == "infinity") {
+                    return;
+                }
+                _2.start();
+        });
+
+        return [_1, _2];
+    }
+    
+    playerMoveCallbacks = [
+        (pos) => {
+            isPlayerMove = true;
+            currPlayerMove = getPlayerMove(pos);
+            currPlayerMove[0].start();
+            changeRoomCallbacks[0]();
+        },
+        () => {
+            if (isPlayerMove) {
+                var [_1, _2] = currPlayerMove;
+                _1.update(); _2.update();
+            }
+        }
+    ];
+
+    var isInfinityRoomUwu = false;
+    var uwu = new TWEEN.Tween(infinity_room.position)
+        .to({y:.4}, 5000, TWEEN.Easing.Quadratic.InOut)
+        .onComplete(() => {
+            console.log("^-^")
+    }).delay(1000);
+    infinityRoomCallbacks = [
+        () => {
+            isInfinityRoomUwu = true;
+            uwu.start();
+        },
+        () => {
+            if (isInfinityRoomUwu)
+                uwu.update();
+        }
+    ]
+}
+
+function initInteractive() {
+    
+    raycaster = new THREE.Raycaster();
+    pointer = new THREE.Vector2();
+    
+}
+
+function gen_rand_color(seed, l, ll) {
+
+    function frac(x) {return x - Math.floor(x);}
+    function rand(x, seed) {return frac((seed + 1820810380) * Math.sin(120813*x + 20831))}
+
+    seed = Number(seed % BigInt(0xffff));
+    var [r,g,b] = [rand(0, seed), rand(2, seed), rand(3, seed)];
+    [r,g,b] = [Math.floor((r*l+(1-l))*ll), Math.floor((g*l+(1-l))*ll), Math.floor((b*l+(1-l))*ll)];
+    
+    return (r << 16) + (g << 8) + b;
+}
+
+function changeTheme(seed) {
+
+    var bg_color, room_color;
+    if (seed == "infinity") {
+        bg_color = 0x1f0029;
+    }
+    else {
+        bg_color = gen_rand_color(seed, 1., 64);
+        room_color = gen_rand_color(seed*BigInt(2), .4, 256);
+    }
+
+    scene.fog.color = new THREE.Color(bg_color);
+    scene.background = new THREE.Color(bg_color);
+
+    roommat.color = new THREE.Color(room_color);
+}
+
+function displayInfinityRoom() {
+
+    infinity_room.visible = true;
+    scene.fog.near = 0;
+    scene.fog.far = 100;
+    camera.position.set(0,0,-5);
+    room.position.set(0,-1000,0);
+    player.position.set(0,-1000,0);
+
+    infinityRoomCallbacks[0]();
+
+    controls.minPolarAngle = 0;
+    controls.maxPolarAngle = Math.PI;
+    controls.enablePan = true;
+    controls.enableZoom = true;
+}
+
+function updateScene(time) {
+
+    function clamp(num, min, max) {return Math.min(Math.max(num, min), max);}
+    function frac(x) {return x - Math.floor(x);}
+    function rand(x, seed) {return frac(seed * Math.sin(Math.floor(x)))}
+    function spline(x) {return Math.pow((2*x + 1) * (1 - x) * (1 - x), 2);}
+    function bumps0(x, seed) {return rand(x, 29734492) * spline(frac(x)) + rand(x+1, 29734492) * spline(frac(-x-1));}
+    function bumps1(x) {return Math.pow(Math.min(1, 1.4*bumps0(x, 29734492)), 20);}
+    function bumps2(x, seed) {return Math.pow(clamp(1.3*(bumps0(x, seed) * Math.sin(x * Math.PI)), -1, 1), 3);}
+
+    // Move lighting a little
+    directionalLight.position.x = Math.sin(.1*1.7*time/1000);
+    directionalLight.position.z = Math.cos(.1*1.1*time/1000);
+
+    // Make the player look alive
+    player.rotation.y  = bumps2(time/1000*2, 9123482);
+    infinity_room.rotation.y  = bumps2(time/1000*2, 9123482);
+
+    raycaster.setFromCamera( pointer, camera );
+    const intersects = raycaster.intersectObjects( doorsclickable.children );
+    for (let i=0; i<doorsclickable.children.length; i++) {
+        doorsclickable.children[i].material.opacity = 0;
+        updateDesc("");
+
+        document.body.style.cursor = 'auto';
+    }
+    if (intersects.length > 0) {
+		intersects[0].object.material.opacity = 1;
+        let i = doorsclickable.children.indexOf(intersects[0].object);
+        let desc;
+        if (i == 3)
+            desc = "Goes to room n+1 mod 2²⁵⁵-19";
+        else if (i == 1)
+            desc = "Goes to room 1/n mod 2²⁵⁵-19";
+        else if (i == 0)
+            desc = "Goes to room 1/n mod 2²⁵⁵-19";
+        else
+            desc = "Goes to room n-1 mod 2²⁵⁵-19";
+        updateDesc(desc);
+        
+        document.body.style.cursor = 'pointer';
+	}
+
+}
+
+function onclickHandler() {
+
+    raycaster.setFromCamera( pointer, camera );
+    const intersects = raycaster.intersectObjects( doorsclickable.children );
+    for (let i=0; i<doorsclickable.children.length; i++) {
+        doorsclickable.children[i].material.opacity = 0;
+    }
+    if (intersects.length > 0) {
+		let i = doorsclickable.children.indexOf(intersects[0].object);
+        if (i == 3)
+            playerMove("+");
+        else if (i == 1)
+            playerMove("/u");
+        else if (i == 0)
+            playerMove("/d");
+        else
+            playerMove("-");
+	}
+
+}
+
+function animate(time) {
+
+	requestAnimationFrame( animate );
+    updateScene(time)
+
+    changeRoomCallbacks[1]();
+    playerMoveCallbacks[1]();
+    infinityRoomCallbacks[1]();
+
+    controls.update();
+	renderer.render( scene, camera );
+}
+
+function onPointerMove( event ) {
+
+    var [W,H] = getCanvasSize();
+    pointer.x = ( event.clientX / W ) * 2 - 1;
+    pointer.y = - ( event.clientY / H ) * 2 + 1;
+
+}
+
+function onWindowResize() {
+    const [W,H] = getCanvasSize();
+    camera.aspect = W/H;
+    camera.updateProjectionMatrix();
+    renderer.setSize(W, H);
+}
+
+async function getNextRoom(pos)
+{
+    let response = await fetch('api/get_next?' + new URLSearchParams({
+        'current': curr_room.toString(),
+        'move': pos.charAt(0)
+    }));
+    let data = await response.json();
+    if (!response.ok) {
+        alert(data["detail"]);
+        return;
+    }
+    
+    if (data["is_finish"]) {
+        return ["infinity", true];
+    }
+    return [BigInt(data["room"]), false];
+}
+
+function updateDesc(desc)
+{
+    if (desc.length == 0) {
+        if (curr_room == "infinity")
+            desc = "You've reached Room 𝔦𝔫𝔣𝔦𝔫𝔦𝔱𝔶!";
+        else
+            desc = "You are in Room ".concat(curr_room);
+    }
+    document.getElementById("content-1").textContent = desc;
+}
+
+async function updateLeaderboard()
+{
+    let node = document.getElementById("leaderboard");
+    node.innerHTML= "";
+
+    let response = await fetch("api/leaderboard");
+    let data = await response.json();
+    if (!response.ok) {
+        alert(data["detail"]);
+        return;
+    }
+    
+    const table = document.createElement('table');
+    var th = document.createElement("tr");
+    var td1 = document.createElement("th");
+    var td2 = document.createElement("th");
+    var td3 = document.createElement("th");
+    td1.appendChild(document.createTextNode("Position"));
+    td2.appendChild(document.createTextNode("Player"));
+    td3.appendChild(document.createTextNode("Moves"));
+    th.appendChild(td1);
+    th.appendChild(td2);
+    th.appendChild(td3);
+    table.appendChild(th);
+
+    data.forEach((e,idx) => {
+
+        var tr = document.createElement("tr");
+
+        var td1 = document.createElement('td');
+        var td2 = document.createElement('td');
+        var td3 = document.createElement('td');
+
+        td1.appendChild(document.createTextNode((idx+1).toString()));
+        td2.appendChild(document.createTextNode(e["player_name"]));
+        td3.appendChild(document.createTextNode(e["score"].toString()));
+
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tr.appendChild(td3);
+
+        table.appendChild(tr);
+    });
+
+    node.appendChild(table);
+}
+
+async function playerMove(pos)
+{
+    moves = moves.concat(pos.charAt(0));
+
+    document.getElementById("content-2").textContent = "Number of moves: ".concat(moves.length.toString())
+
+    var finished;
+    [curr_room, finished] = await getNextRoom(pos);
+    updateDesc("");
+    playerMoveCallbacks[0](pos);
+
+    if (finished) {
+        // Prompt form
+        setTimeout(() => {
+            document.getElementById("submission-container").style.visibility = "visible";
+        }, 8000);
+    }
+}
+
+async function init() {
+
+    initStatic();
+    initAnimations();
+    initInteractive();
+
+    let response = await fetch("api/get_start");
+    let data = await response.json();
+    curr_room = BigInt(data['room']);
+
+    changeTheme(curr_room);
+    animate();
+    updateDesc("");
+    updateLeaderboard();
+
+    renderer.domElement.addEventListener("click", onclickHandler, true);
+    window.addEventListener( 'pointermove', onPointerMove );
+    window.addEventListener('resize', onWindowResize);
+    window.onload = onWindowResize;
+
+    document.getElementById("leaderboard-button-label").addEventListener("click", updateLeaderboard);
+
+    document.getElementById("submission-form").addEventListener("submit",
+        async (e) => {
+            
+            e.preventDefault();
+
+            var pname = document.getElementById("submission-pname").value;
+
+            let response = await fetch("api/submit", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({player_name: pname, moves: moves})
+            });
+            let data = await response.json();
+            if (!response.ok) {
+                alert(data["detail"]);
+                return;
+            }
+
+            console.log(data["detail"])
+            document.getElementById("content-2").textContent = data["detail"];
+
+            document.getElementById("submission-container").style.visibility = "hidden";
+        }
+    )
+
+    var isKeyTimeout = false;
+    document.addEventListener('keydown', (e) => {
+        if (isKeyTimeout) return;
+        switch (e.key) {
+            case "ArrowLeft": playerMove("-"); break;
+            case "ArrowRight": playerMove("+"); break;
+            case "ArrowUp": playerMove("/u"); break;
+            case "ArrowDown": playerMove("/d"); break;
+        }
+        isKeyTimeout = true;
+        setTimeout(() => {isKeyTimeout = false}, PLAYER_MOVE_TIMING * 2);
+    });
+}
+
+init();
+</script>

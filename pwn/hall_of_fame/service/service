@@ -1,0 +1,12 @@
+service hall_of_fame
+{
+    disable     = no
+    socket_type = stream
+    protocol    = tcp
+    wait        = no
+    user        = hall_of_famer
+    bind        = 0.0.0.0
+    server      = /home/hall_of_famer/hall_of_fame
+    type        = UNLISTED
+    port        = 55555
+}

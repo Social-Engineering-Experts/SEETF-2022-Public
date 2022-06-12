@@ -1,0 +1,18 @@
+DLLs are generated and stored as resources and written to temporary files. These DLLs export a function with a random ID - i.e. "exportedFuncXXXXXX" and are indistinguishable without reversing. Upon exiting the application, these DLLs are cleaned up.
+Initializes a doubly linked list of function pointers.
+Each function pointer corresponds to one function from the DLL.
+The functions used for decoding are only at prime indices.
+Depending on length of input, the list is traversed a specific number of times and a transforming function is called for each character of the input string.
+"Dummy" functions are included as some of the DLLs loaded - if the application is not called with any specific parameters it performs random functionality.
+The same DLL can be imported and loaded at multiple indexes to confound aspiring reverse engineers.
+
+Ideas for DLL functionality
+- random number generator - for utility (done)
+- prime number detector - sieve of eratosthenes (done)
+- XOR functionality (done)
+- Hashing functionality (not doing)
+- wiping the temp directory of DLLs dumped (done)
+- resource loader? will be quite annoying to make though (done)
+- anti debugging (to do)
+- segfaulter (hmmm)
+- Make resource related functions dynamic resolution

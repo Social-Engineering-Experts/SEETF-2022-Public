@@ -1,0 +1,20 @@
+contract: DuperSuperSafeSafe # Challenge contract name(class name)
+
+# The description will be displayed when players nc to the challenge
+description: |
+  Wayyang had recently learned about blockchain and was intrigued to create a super-secure safe where he could store his funds.
+  However, he did not know that it was not as secure as he thought.
+  Your goal is to make isSolved() function returns true!
+
+flag: SEE{B10cKcH41n_I5_sUp3r_53cuRe!}
+
+constructor:
+  args: ['0x57617979616e67000000000000000000000000000000000000000000000000', '0x43757465000000000000000000000000000000000000000000000000000000']
+  value: 30000000000000000000
+  gas: 1000000 # The default value is the response value of the eth_estimateGas JSON-RPC
+
+#show_source: False      # Show source option available by default, you need to set False for a reverse contract challenge
+
+#solved_event: SendFlag  # The default is to use isSolved() view function as solved checker, but emitted event checker is also supported
+
+# deployed_addr: 0xdac17f958d2ee523a2206206994597c13d831ec7  # Use a pre-deployed contract for all players instead of deploying individually
